@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostListener, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostBinding, HostListener, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
 import { Card } from '@udonarium/card';
 import { CardStack } from '@udonarium/card-stack';
@@ -30,6 +30,7 @@ import { TableTouchGesture } from './table-touch-gesture';
 
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
 import { Config } from '@udonarium/config';
+import { pluginConfig } from 'src/app/plugins/config';
 
 @Component({
   selector: 'game-table',
@@ -37,6 +38,7 @@ import { Config } from '@udonarium/config';
   styleUrls: ['./game-table.component.css'],
 })
 export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
+  @HostBinding('class.is2d') is2d: boolean = pluginConfig.is2d
   @ViewChild('root', { static: true }) rootElementRef: ElementRef<HTMLElement>;
   @ViewChild('gameTable', { static: true }) gameTable: ElementRef<HTMLElement>;
   @ViewChild('gameObjects', { static: true }) gameObjects: ElementRef<HTMLElement>;
@@ -57,14 +59,14 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     return this.currentTable.backgroundFilterType;
   }
 
-  get roomGridDispAlways(): boolean { 
+  get roomGridDispAlways(): boolean {
     let conf = ObjectStore.instance.get<Config>('Config');
-    return conf? conf.roomGridDispAlways : false ;
+    return conf ? conf.roomGridDispAlways : false;
   }
 
-  set roomGridDispAlways(disp: boolean){
+  set roomGridDispAlways(disp: boolean) {
     let conf = ObjectStore.instance.get<Config>('Config');
-    if(conf) conf.roomGridDispAlways = disp;
+    if (conf) conf.roomGridDispAlways = disp;
   }
 
   private isTransformMode: boolean = false;
@@ -75,9 +77,9 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   private viewPotisonY: number = 0;
   private viewPotisonZ: number = 0;
 
-  private viewRotateX: number = 50;
+  private viewRotateX: number = pluginConfig.is2d ? 0 : 50;
   private viewRotateY: number = 0;
-  private viewRotateZ: number = 10;
+  private viewRotateZ: number = pluginConfig.is2d ? 0 : 10;
 
   private mouseGesture: TableMouseGesture = null;
   private touchGesture: TableTouchGesture = null;
@@ -114,7 +116,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
         this.isTransformMode = true;
         this.pointerDeviceService.isDragging = false;
         let opacity: number = this.tableSelecter.gridShow ? 1.0 : 0.0;
-        if(this.roomGridDispAlways){
+        if (this.roomGridDispAlways) {
           opacity = 1.0;
         }
         this.gridCanvas.nativeElement.style.opacity = opacity + '';
@@ -257,7 +259,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     this.isTransformMode = true;
     this.pointerDeviceService.isDragging = false;
     let opacity: number = this.tableSelecter.gridShow ? 1.0 : 0.0;
-    if(this.roomGridDispAlways){
+    if (this.roomGridDispAlways) {
       opacity = 1.0;
     }
     this.gridCanvas.nativeElement.style.opacity = opacity + '';
@@ -297,7 +299,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   private setGameTableGrid(width: number, height: number, gridSize: number = 50, gridType: GridType = GridType.SQUARE, gridColor: string = '#000000e6') {
-    
+
     this.gameTable.nativeElement.style.width = width * gridSize + 'px';
     this.gameTable.nativeElement.style.height = height * gridSize + 'px';
 
@@ -306,12 +308,12 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
 
     setTimeout(() => { // 他PL操作で表示条件変更時、情報更新されてからUpdate処理をするため
       let opacity: number = this.tableSelecter.gridShow ? 1.0 : 0.0;
-      if(this.roomGridDispAlways){
+      if (this.roomGridDispAlways) {
         opacity = 1.0;
       }
       this.gridCanvas.nativeElement.style.opacity = opacity + '';
       console.log('グリッド描画');
-    },0);
+    }, 0);
   }
 
   private removeSelectionRanges() {
