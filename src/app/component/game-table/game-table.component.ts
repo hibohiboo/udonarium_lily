@@ -69,7 +69,8 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     if (conf) conf.roomGridDispAlways = disp;
   }
 
-  private isTransformMode: boolean = false;
+  private isTableTransformMode: boolean = false;
+  private isTableTransformed: boolean = false;
 
   get isPointerDragging(): boolean { return this.pointerDeviceService.isDragging; }
 
@@ -107,13 +108,13 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnInit() {
     EventSystem.register(this)
-      .on('UPDATE_GAME_OBJECT', -1000, event => {
+      .on('UPDATE_GAME_OBJECT', event => {
         if (event.data.identifier !== this.currentTable.identifier && event.data.identifier !== this.tableSelecter.identifier) return;
         console.log('UPDATE_GAME_OBJECT GameTableComponent ' + this.currentTable.identifier);
         this.setGameTableGrid(this.currentTable.width, this.currentTable.height, this.currentTable.gridSize, this.currentTable.gridType, this.currentTable.gridColor);
       })
       .on('DRAG_LOCKED_OBJECT', event => {
-        this.isTransformMode = true;
+        this.isTableTransformMode = true;
         this.pointerDeviceService.isDragging = false;
         let opacity: number = this.tableSelecter.gridShow ? 1.0 : 0.0;
         if (this.roomGridDispAlways) {
@@ -198,7 +199,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onTableTouchTransform(transformX: number, transformY: number, transformZ: number, rotateX: number, rotateY: number, rotateZ: number, event: string, srcEvent: TouchEvent | MouseEvent | PointerEvent) {
-    if (!this.isTransformMode || document.body !== document.activeElement) return;
+    if (!this.isTableTransformMode || document.body !== document.activeElement) return;
 
     if (!this.pointerDeviceService.isAllowedToOpenContextMenu && this.contextMenuService.isShow) {
       this.ngZone.run(() => this.contextMenuService.close());
@@ -215,13 +216,14 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     if (750 < transformZ + this.viewPotisonZ) transformZ += 750 - (transformZ + this.viewPotisonZ);
 
     this.setTransform(transformX, transformY, transformZ, rotateX, rotateY, rotateZ);
+    this.isTableTransformed = true;
   }
 
   onTableMouseStart(e: any) {
     if (e.target.contains(this.gameObjects.nativeElement) || e.button === 1 || e.button === 2) {
-      this.isTransformMode = true;
+      this.isTableTransformMode = true;
     } else {
-      this.isTransformMode = false;
+      this.isTableTransformMode = false;
       this.pointerDeviceService.isDragging = true;
       this.gridCanvas.nativeElement.style.opacity = 1.0 + '';
       EventSystem.trigger('DISP_TERRAIN_GRID', {});
@@ -238,7 +240,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   onTableMouseTransform(transformX: number, transformY: number, transformZ: number, rotateX: number, rotateY: number, rotateZ: number, event: string, srcEvent: TouchEvent | MouseEvent | PointerEvent) {
-    if (!this.isTransformMode || document.body !== document.activeElement) return;
+    if (!this.isTableTransformMode || document.body !== document.activeElement) return;
 
     if (!this.pointerDeviceService.isAllowedToOpenContextMenu && this.contextMenuService.isShow) {
       this.ngZone.run(() => this.contextMenuService.close());
@@ -252,11 +254,12 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     transformY *= scale;
 
     this.setTransform(transformX, transformY, transformZ, rotateX, rotateY, rotateZ);
+    this.isTableTransformed = true;
   }
 
   cancelInput() {
     this.mouseGesture.cancel();
-    this.isTransformMode = true;
+    this.isTableTransformMode = true;
     this.pointerDeviceService.isDragging = false;
     let opacity: number = this.tableSelecter.gridShow ? 1.0 : 0.0;
     if (this.roomGridDispAlways) {
@@ -285,6 +288,20 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     });
     this.contextMenuService.open(menuPosition, menuActions, this.currentTable.name);
   }
+  @HostListener('document:mousedown', ['$event'])
+  onDocumentMouseDown(e: MouseEvent) {
+    this.isTableTransformed = false;
+  }
+
+  @HostListener('document:touchstart', ['$event'])
+  onDocumentTouchStart(e: TouchEvent) {
+    this.isTableTransformed = false;
+  }
+
+  @HostListener('document:contextmenu', ['$event'])
+  onDocumentContextMenu(e: MouseEvent) {
+    if (this.isTableTransformed && !this.pointerDeviceService.isAllowedToOpenContextMenu) e.preventDefault();
+  }
 
   private setTransform(transformX: number, transformY: number, transformZ: number, rotateX: number, rotateY: number, rotateZ: number) {
     this.viewRotateX += rotateX;
@@ -294,12 +311,10 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
     this.viewPotisonX += transformX;
     this.viewPotisonY += transformY;
     this.viewPotisonZ += transformZ;
-
     if (this.is2d) {
       this.viewRotateX -= rotateX;
     }
-
-    this.gameTable.nativeElement.style.transform = 'translateZ(' + this.viewPotisonZ + 'px) translateY(' + this.viewPotisonY + 'px) translateX(' + this.viewPotisonX + 'px) rotateY(' + this.viewRotateY + 'deg) rotateX(' + this.viewRotateX + 'deg) rotateZ(' + this.viewRotateZ + 'deg) ';
+    this.gameTable.nativeElement.style.transform = `translateZ(${this.viewPotisonZ.toFixed(4)}px) translateY(${this.viewPotisonY.toFixed(4)}px) translateX(${this.viewPotisonX.toFixed(4)}px) rotateY(${this.viewRotateY.toFixed(4)}deg) rotateX(${this.viewRotateX.toFixed(4) + 'deg) rotateZ(' + this.viewRotateZ.toFixed(4)}deg)`;
   }
 
   private setGameTableGrid(width: number, height: number, gridSize: number = 50, gridType: GridType = GridType.SQUARE, gridColor: string = '#000000e6') {

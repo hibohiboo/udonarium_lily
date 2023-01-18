@@ -30,12 +30,12 @@ export class ChatPalette extends ObjectNode {
   //TODO: キャラシ項目のコピー
 
   get paletteLines(): PaletteLine[] {
-    if (!this.isAnalized) this.parse(<string> this.value);
+    if (!this.isAnalized) this.parse(<string>this.value);
     return this._paletteLines;
   }
 
   get paletteVariables(): PaletteVariable[] {
-    if (!this.isAnalized) this.parse(<string> this.value);
+    if (!this.isAnalized) this.parse(<string>this.value);
     return this._paletteVariables;
   }
 
@@ -120,7 +120,7 @@ export class ChatPalette extends ObjectNode {
   private isAnalized: boolean = false;
 
   getPalette(): string[] {
-    if (!this.isAnalized) this.parse(<string> this.value);
+    if (!this.isAnalized) this.parse(<string>this.value);
     return this._palettes;
   }
 
@@ -132,10 +132,10 @@ export class ChatPalette extends ObjectNode {
   checkTargetCharactor(text: string): boolean{
     let istarget = text.match(/[tTｔＴ][{｛]\s*([^{}｛｝]+)\s*[}｝]/g) ? true : false;
 
-    if( text.match(/^[tTｔＴ][:：]([^:：]+)/g) ){
+    if( text.match(/^[sSｓＳ]?[tTｔＴ][:：]([^:：]+)/g) ){
       istarget = true;
     }
-    if( text.match(/\s[tTｔＴ][:：]([^:：]+)/g) ){
+    if( text.match(/\s[sSｓＳ]?[tTｔＴ][:：]([^:：]+)/g) ){
       istarget = true;
     }
     if( text.match(/^[tTｔＴ][&＆]([^&＆]+)/g) ){
@@ -184,8 +184,11 @@ export class ChatPalette extends ObjectNode {
             let element = target.rootDataElement.getFirstElementByName(name);
             if (element) {
               let targetElementText =''
-              if (useMax && element.isNumberResource) targetElementText = element.value + '';
-              targetElementText = element.isNumberResource ? element.currentValue + '' : element.value + '';
+              if (useMax && element.isNumberResource){
+                targetElementText = element.value + '';
+              }else{
+                targetElementText = element.isNumberResource ? element.currentValue + '' : element.value + '';
+              }
               if ( targetElementText.match(/[{｛]\s*([^{}｛｝]+)\s*[}｝]/g)) {
                 targetElementText = targetElementText.replace(/[{｛]/g,'t{');
               }
