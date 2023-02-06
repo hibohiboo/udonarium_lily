@@ -96,6 +96,7 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopService } from 'service/tabletop.service';
 
 import { AppComponent } from './app.component';
+import { AppWrapperComponent } from './app-wrapper.component';
 
 @NgModule({
   declarations: [
@@ -177,7 +178,8 @@ import { AppComponent } from './app.component';
     TooltipDirective,
     DraggableDirective,
     ResizableDirective,
-    ChatInputComponent
+    ChatInputComponent,
+    AppWrapperComponent
   ],
   imports: [
     BrowserModule,
@@ -198,6 +200,6 @@ import { AppComponent } from './app.component';
     PointerDeviceService,
     TabletopService
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppWrapperComponent]
 })
 export class AppModule { }
