@@ -1,5 +1,8 @@
 import { Component } from "@angular/core";
+import { AudioStorage } from "@udonarium/core/file-storage/audio-storage";
 import { FileArchiver } from "@udonarium/core/file-storage/file-archiver";
+import { ObjectStore } from "@udonarium/core/synchronize-object/object-store";
+import { Jukebox } from "@udonarium/Jukebox";
 
 interface Window {
   showDirectoryPicker: () => Promise<FileSystemDirectoryHandle>
@@ -9,6 +12,7 @@ type FileData = { name:string, handle: FileSystemFileHandle }
 type Scene = string;
 type Sound = FileData;
 
+const MEGA_BYTE = 1024 * 1024;
 @Component({
   selector: 'board-list',
   templateUrl: './board-list.component.html',
@@ -20,16 +24,36 @@ export class ExtendBoardListComponent  {
   async openDataDirectory() {
     const dirHandle = await window.showDirectoryPicker();
     const soundsHandle = await dirHandle.getDirectoryHandle('sounds');
-    this.sounds = await getFileNameListRecursice('', soundsHandle);
+    const soundFIles = await getFileNameListRecursice('', soundsHandle);
+    this.sounds = soundFIles.filter(data=>{ const ext = data.name.slice(-3); return ['mp3', 'wav', 'mid', 'wma'].includes(ext); })
   }
 
   trackByFile(index: number, file: FileData) {
     return file.name;
   }
+  async playSound(fileData: FileData) {
+    const file = await fileData.handle.getFile();
+    const audio = await this.handleAudio(file);
+    const jukebox = ObjectStore.instance.get<Jukebox>('Jukebox');
+    if(!audio) return;
+    jukebox.play(audio.identifier)
+  }
   async addSound(fileData: FileData) {
     const file = await fileData.handle.getFile();
-    FileArchiver.instance.load([file]);
+    await FileArchiver.instance.load([file]);
   }
+
+  private async handleAudio(file: File) {
+    if (file.type.indexOf('audio/') < 0) return;
+    const maxAudioeSize = 10 * MEGA_BYTE;
+    if (maxAudioeSize < file.size) {
+      console.warn(`File size limit exceeded. -> ${file.name} (${(file.size / 1024 / 1024).toFixed(2)}MB)`);
+      return;
+    }
+    console.log(file.name + ' type:' + file.type);
+    return await AudioStorage.instance.addAsync(file);
+  }
+
 }
 
 const getFileNameListRecursice = async(prefix: string, dirHandle: FileSystemDirectoryHandle): Promise<FileData[]> => {
