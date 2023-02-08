@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-wrapper',
   template: ` <div style="display: flex;position: relative;;">
-                <div style="width:400px;height: 100vh;">
+                <div style="width:500px;height: 100vh;">
                   <board-list></board-list>
                 </div>
                 <div style="width: 100%;height:80vh;border: 2px solid #222;overflow: hidden; position: relative;">
