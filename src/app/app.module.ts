@@ -96,7 +96,8 @@ import { PointerDeviceService } from 'service/pointer-device.service';
 import { TabletopService } from 'service/tabletop.service';
 
 import { AppComponent } from './app.component';
-import { AppWrapperComponent } from './app-wrapper.component';
+import { MasterScreenComponent } from './plugins/extends/component/master-screen/master-screen.component';
+import pluginModules from './plugins/extends/modules'
 
 @NgModule({
   declarations: [
@@ -106,7 +107,7 @@ import { AppWrapperComponent } from './app-wrapper.component';
     CardStackComponent,
     CardStackListComponent,
     CardStackListComponentEx,
-//    CardStackListImageComponent,
+    //    CardStackListImageComponent,
     ChatMessageComponent,
     ChatPaletteComponent,
     ChatTabComponent,
@@ -179,7 +180,7 @@ import { AppWrapperComponent } from './app-wrapper.component';
     DraggableDirective,
     ResizableDirective,
     ChatInputComponent,
-    AppWrapperComponent
+    ...pluginModules.components
   ],
   imports: [
     BrowserModule,
@@ -200,6 +201,6 @@ import { AppWrapperComponent } from './app-wrapper.component';
     PointerDeviceService,
     TabletopService
   ],
-  bootstrap: [AppWrapperComponent]
+  bootstrap: [MasterScreenComponent]
 })
 export class AppModule { }

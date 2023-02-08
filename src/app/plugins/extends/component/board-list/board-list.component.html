@@ -1,0 +1,9 @@
+<div>
+  <button (click)="openDataDirectory()">フォルダ選択</button>
+  <h2>音楽</h2>
+  <ul>
+    <li  *ngFor="let scene of sounds; trackBy: trackByScene">
+      {{scene}}
+    </li>
+  </ul>
+</div>
