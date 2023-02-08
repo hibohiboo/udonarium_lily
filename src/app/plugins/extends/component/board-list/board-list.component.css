@@ -1,4 +1,8 @@
 ul {
   overflow: auto;
-  height: 600px;
+  max-height: 400px;
+}
+.wrapper {
+  overflow: auto;
+  max-height: 100vh;
 }

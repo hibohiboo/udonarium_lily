@@ -17,6 +17,7 @@ import { BatchService } from 'service/batch.service';
 
 import { DiceBot } from '@udonarium/dice-bot';
 import { Config } from '@udonarium/config';
+import { setSelectedTable } from 'src/app/plugins/extends/domain/scene/backGroundController';
 
 @Component({
   selector: 'game-table-setting',
@@ -36,7 +37,7 @@ export class GameTableSettingComponent implements OnInit, OnDestroy, AfterViewIn
     });
   }
 
-  get roomGridDispAlways(): boolean { 
+  get roomGridDispAlways(): boolean {
     let conf = ObjectStore.instance.get<Config>('Config');
     return conf? conf.roomGridDispAlways : false ;
   }
@@ -130,6 +131,7 @@ export class GameTableSettingComponent implements OnInit, OnDestroy, AfterViewIn
           this.selectedTableXml = object.toXml();
         }
       });
+    setSelectedTable(this.selectedTable);
   }
 
   ngAfterViewInit() { }
@@ -142,6 +144,7 @@ export class GameTableSettingComponent implements OnInit, OnDestroy, AfterViewIn
     EventSystem.call('SELECT_GAME_TABLE', { identifier: identifier }, Network.peerId);
     this.selectedTable = ObjectStore.instance.get<GameTable>(identifier);
     this.selectedTableXml = '';
+    setSelectedTable(this.selectedTable);
   }
 
   getGameTables(): GameTable[] {

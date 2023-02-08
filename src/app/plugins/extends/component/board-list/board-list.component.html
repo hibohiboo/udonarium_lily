@@ -1,9 +1,33 @@
-<div>
-  <button (click)="openDataDirectory()">フォルダ選択</button>
-  <h2>音楽</h2>
-  <ul>
-    <li *ngFor="let file of sounds; trackBy: trackByFile">
-      {{file.name}} <button  (click)="playSound(file)"> 再生</button>
-    </li>
-  </ul>
+<div class="wrapper">
+  <div>
+    <h2>シーン機能</h2>
+    <p>
+      ダウンロードzipを解凍して出来たフォルダを選択。
+    </p>
+
+    <button (click)="openDataDirectory()">フォルダ選択</button>
+    <h3>音楽</h3>
+    <ul>
+      <li *ngFor="let file of sounds; trackBy: trackByFile">
+        {{file.name}} <button  (click)="playSound(file)"> 再生</button>
+      </li>
+    </ul>
+    <h3>背景</h3>
+    <ul>
+      <li *ngFor="let file of backGrounds; trackBy: trackByFile">
+        {{file.name}} <button (click)="setTable(file)"> テーブル </button><button  (click)="setBackGround(file)"> 背景 </button>
+      </li>
+    </ul>
+  </div>
+  <div>
+    <h2>フォルダから音楽再生</h2>
+    <button (click)="openSoundDirectory()">フォルダ選択</button>
+    <h3>音楽</h3>
+    <ul>
+      <li *ngFor="let file of sounds; trackBy: trackByFile">
+        {{file.name}} <button  (click)="playSound(file)"> 再生</button>
+      </li>
+    </ul>
+  </div>
+
 </div>
