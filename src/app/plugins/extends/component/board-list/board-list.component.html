@@ -33,6 +33,11 @@
       </select>
     </label>
     <button (click)="addScene()">シーンを追加</button>
+    <p>
+      <button (click)="writeScenes()">現在の状態を保存</button>
+    </p>
+
+
     <h3>音楽</h3>
     <ul>
       <li *ngFor="let file of sounds; trackBy: trackByFile">

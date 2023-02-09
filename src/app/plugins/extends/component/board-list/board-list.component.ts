@@ -28,6 +28,7 @@ export class ExtendBoardListComponent  {
   get backGrounds(): BGImage[] { return getBackGrounds(); };
   set backGrounds(_) { setBackGrounds(_); }
   playSounds: Sound[] = [];
+  sceneFileHandle: FileSystemFileHandle  | null = null;
 
   async openDataDirectory() {
     const dirHandle = await window.showDirectoryPicker();
@@ -45,6 +46,11 @@ export class ExtendBoardListComponent  {
       return {...f, thumbnail: thumbnail as string }
     }))
     this.backGrounds = bgs;
+    const fileHandle = await dirHandle.getFileHandle('scenes.json', { create: true });
+    this.sceneFileHandle = fileHandle;
+    const jsonFile = await fileHandle.getFile();
+    const json = await jsonFile.text();
+    console.log(json)
   }
   async openSoundDirectory() {
     const dirHandle = await window.showDirectoryPicker();
@@ -96,6 +102,13 @@ export class ExtendBoardListComponent  {
     this.selectedBackGroundName = '';
     this.selectedSound = '';
     this.selectedTableName = ''
+  }
+  async writeScenes() {
+    const json = JSON.stringify(this.scenes, undefined, 2);
+    const writableStream = await this.sceneFileHandle.createWritable()
+    await writableStream.write(json);
+    await writableStream.close();
+    alert ('ファイルに保存しました。')
   }
 }
 
