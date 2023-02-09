@@ -7,9 +7,13 @@ import { Component } from '@angular/core';
                 <div style="width:600px;height: 100vh;">
                   <board-list></board-list>
                 </div>
-                <div style="width: 100%;height:80vh;border: 2px solid #222;overflow: hidden; position: relative;">
+                <div style="width: 100%;overflow: hidden; position: relative;">
+                  <div style="width: 100%; height:80vh;border: 2px solid #222;overflow: hidden; position: relative;">
                    <app-root></app-root>
-                 </div>
+                  </div>
+                  <div>
+                    <scene-list></scene-list>
+                  </div>
               </div>`,
 })
 

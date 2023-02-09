@@ -20,7 +20,7 @@ import { DataElement } from '@udonarium/data-element';
 
 import { ContextMenuAction } from './context-menu.service';
 import { PointerCoordinate } from './pointer-device.service';
-import { setSelectedTable } from '../plugins/extends/domain/scene/backGroundController';
+import { setSelectedTable } from '../plugins/extends/domain/scene/gemeTableController';
 
 @Injectable({
   providedIn: 'root'

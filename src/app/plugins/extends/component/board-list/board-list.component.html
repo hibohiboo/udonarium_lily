@@ -24,7 +24,7 @@
     <button (click)="openSoundDirectory()">フォルダ選択</button>
     <h3>音楽</h3>
     <ul>
-      <li *ngFor="let file of sounds; trackBy: trackByFile">
+      <li *ngFor="let file of playSounds; trackBy: trackByFile">
         {{file.name}} <button  (click)="playSound(file)"> 再生</button>
       </li>
     </ul>

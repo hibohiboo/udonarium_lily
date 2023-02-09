@@ -17,7 +17,7 @@ import { BatchService } from 'service/batch.service';
 
 import { DiceBot } from '@udonarium/dice-bot';
 import { Config } from '@udonarium/config';
-import { setSelectedTable } from 'src/app/plugins/extends/domain/scene/backGroundController';
+import { setSelectedTable } from 'src/app/plugins/extends/domain/scene/gemeTableController';
 
 @Component({
   selector: 'game-table-setting',
