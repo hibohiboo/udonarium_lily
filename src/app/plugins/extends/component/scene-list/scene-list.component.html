@@ -2,7 +2,8 @@
     <h2>シーン一覧</h2>
     <ul>
       <li *ngFor="let scene of scenes;">
-        {{scene.title}} <button  (click)="applyScene(scene)"> 反映</button>
+        {{scene.title}} <button  (click)="applyScene(scene)"> 反映</button><br />
+        <img [src]="scene.thumbnail" />
       </li>
     </ul>
 

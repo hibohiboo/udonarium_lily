@@ -41,7 +41,6 @@ export class ExtendBoardListComponent  {
     const bgs = await Promise.all(files.map(async(f)=> {
       const file = await f.handle.getFile()
       const thumbnail = await makeThumbnail(file);
-      console.log('thumb', thumbnail)
       if(!thumbnail) return {...f, thumbnail: '' }
       return {...f, thumbnail: thumbnail as string }
     }))
@@ -82,11 +81,15 @@ export class ExtendBoardListComponent  {
       alert('同じシーンタイトルを付けることはできません');
       return;
     }
+    const tb = this.backGrounds.find(bg=>bg.name === this.selectedTableName);
+    const thumbnail = tb ? tb.thumbnail : ''
+    console.log(thumbnail)
     const scene = await createScene({
       title: this.sceneTitle,
       soundName: this.selectedSound,
       tableImageName: this.selectedTableName,
-      backGroundImageName: this.selectedBackGroundName
+      backGroundImageName: this.selectedBackGroundName,
+      thumbnail
     })
     this.scenes = [...this.scenes, scene ];
     this.sceneTitle = '';

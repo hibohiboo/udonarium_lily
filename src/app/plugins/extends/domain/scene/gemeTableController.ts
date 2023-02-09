@@ -42,7 +42,8 @@ export const setBackGround = async(file: File) => {
 }
 
 
-export const createScene = async(context: { title: string, soundName:string, tableImageName: string, backGroundImageName: string }) => {
+export const createScene = async(context: { thumbnail:string, title: string, soundName:string, tableImageName: string, backGroundImageName: string }) => {
+
   return { ...context }
 }
 
