@@ -3,6 +3,7 @@ import { AudioStorage } from "@udonarium/core/file-storage/audio-storage";
 import { ImageStorage } from "@udonarium/core/file-storage/image-storage";
 import { ObjectStore } from "@udonarium/core/synchronize-object/object-store";
 import { Jukebox } from "@udonarium/Jukebox";
+import { AudioPlayer } from "@udonarium/core/file-storage/audio-player";
 
 let table: GameTable | null = null;
 export const setSelectedTable = (_table) => {
@@ -12,6 +13,13 @@ export const setSelectedTable = (_table) => {
 export const getSelectedTable = () => {
   if(!table) throw Error('table empty')
   return table;
+}
+
+const auditionPlayer: AudioPlayer = new AudioPlayer();
+export const demoPlaySound = async(file:File) => {
+  const audio = await handleAudio(file);
+  if(!audio) return;
+  auditionPlayer.play(audio);
 }
 
 export const playSound = async(file:File) => {

@@ -1,8 +1,9 @@
 import { Component } from "@angular/core";
  import { FileArchiver } from "@udonarium/core/file-storage/file-archiver";
-import { playSound, setBackGround, setTable } from "../../domain/scene/gemeTableController";
+import { demoPlaySound, playSound, setBackGround, setTable } from "../../domain/scene/gemeTableController";
 import { getBackGrounds, getScenes, getSounds, setBackGrounds, setScenes, setSounds } from "../../domain/scene/files";
 import { BGImage, FileData, Scene, Sound } from "../../domain/scene/types";
+import { AudioPlayer } from "@udonarium/core/file-storage/audio-player";
 
 interface Window {
   showDirectoryPicker: () => Promise<FileSystemDirectoryHandle>
@@ -15,6 +16,7 @@ declare var window: Window
   styleUrls: ['./board-list.component.css']
 })
 export class ExtendBoardListComponent  {
+
   get scenes(): Scene[] { return getScenes(); }
   set scenes(_) { setScenes(_); }
   get sounds(): Sound[] { return getSounds(); }
@@ -49,6 +51,7 @@ export class ExtendBoardListComponent  {
   async addSound(fileData: FileData) {
     const file = await fileData.handle.getFile();
     await FileArchiver.instance.load([file]);
+    await demoPlaySound(file);
   }
   async setTable(fileData: FileData) {
     const file = await fileData.handle.getFile();
