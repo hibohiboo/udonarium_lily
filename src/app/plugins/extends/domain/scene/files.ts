@@ -1,7 +1,7 @@
 
 import { BGImage, Scene, Sound } from "./types";
 
-let scenes: Scene[] = [{soundName: 'すずめの戸締まり/01 - 二人の出逢い.mp3', tableImageName: '和風/Ecc-PhgU4AIBZu4.jpg', backGroundImageName: '和風/Ecc9ZtIU0AAD_FJ.jpg'}]
+let scenes: Scene[] = [{ title: 'シーン1', soundName: 'すずめの戸締まり/01 - 二人の出逢い.mp3', tableImageName: '和風/Ecc-PhgU4AIBZu4.jpg', backGroundImageName: '和風/Ecc9ZtIU0AAD_FJ.jpg'}]
 let sounds: Sound[] = []
 let backGrounds: BGImage[] = [];
 
