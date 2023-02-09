@@ -6,6 +6,33 @@
     </p>
 
     <button (click)="openDataDirectory()">フォルダ選択</button>
+    <h3>シーン</h3>
+    <label>
+      <span>タイトル</span>
+      <input [(ngModel)]="sceneTitle" />
+    </label>
+    <label>
+      <span>音楽</span>
+      <select [(ngModel)]="selectedSound">
+        <option [value]="''">選択してください</option>
+        <option *ngFor="let file of sounds; trackBy: trackByFile" [value]="file.name">{{ file.name }}</option>
+      </select>
+    </label>
+    <label>
+      <span>テーブル</span>
+      <select [(ngModel)]="selectedTableName">
+        <option [value]="''">選択してください</option>
+        <option *ngFor="let file of backGrounds; trackBy: trackByFile" [value]="file.name">{{ file.name }}</option>
+      </select>
+    </label>
+    <label>
+      <span>背景</span>
+      <select [(ngModel)]="selectedBackGroundName">
+        <option [value]="''">選択してください</option>
+        <option *ngFor="let file of backGrounds; trackBy: trackByFile" [value]="file.name">{{ file.name }}</option>
+      </select>
+    </label>
+    <button (click)="addScene()">シーンを追加</button>
     <h3>音楽</h3>
     <ul>
       <li *ngFor="let file of sounds; trackBy: trackByFile">
@@ -15,7 +42,10 @@
     <h3>背景</h3>
     <ul>
       <li *ngFor="let file of backGrounds; trackBy: trackByFile">
-        {{file.name}} <button (click)="setTable(file)"> テーブル </button><button  (click)="setBackGround(file)"> 背景 </button>
+
+        <img [src]="file.thumbnail" />
+        <button (click)="setTable(file)"> テーブル </button><button  (click)="setBackGround(file)"> 背景 </button><br />
+        {{file.name}}
       </li>
     </ul>
   </div>

@@ -1,9 +1,10 @@
 import { Component } from "@angular/core";
  import { FileArchiver } from "@udonarium/core/file-storage/file-archiver";
-import { demoPlaySound, playSound, setBackGround, setTable } from "../../domain/scene/gemeTableController";
+import { createScene, demoPlaySound, playSound, setBackGround, setTable } from "../../domain/scene/gemeTableController";
 import { getBackGrounds, getScenes, getSounds, setBackGrounds, setScenes, setSounds } from "../../domain/scene/files";
 import { BGImage, FileData, Scene, Sound } from "../../domain/scene/types";
 import { AudioPlayer } from "@udonarium/core/file-storage/audio-player";
+import { makeThumbnail } from "../../domain/scene/makeThumbnail";
 
 interface Window {
   showDirectoryPicker: () => Promise<FileSystemDirectoryHandle>
@@ -16,7 +17,10 @@ declare var window: Window
   styleUrls: ['./board-list.component.css']
 })
 export class ExtendBoardListComponent  {
-
+  selectedSound = ''
+  selectedTableName = ''
+  selectedBackGroundName = ''
+  sceneTitle = ''
   get scenes(): Scene[] { return getScenes(); }
   set scenes(_) { setScenes(_); }
   get sounds(): Sound[] { return getSounds(); }
@@ -33,12 +37,20 @@ export class ExtendBoardListComponent  {
 
     const backGroundsHandle = await dirHandle.getDirectoryHandle('images');
     const backGroundsFIles = await getFileNameListRecursice('', backGroundsHandle);
-    this.backGrounds = backGroundsFIles.filter(data=>{ const ext = data.name.slice(-3).toLowerCase(); return ['jpg', 'png', 'gif', 'epg'].includes(ext); })
+    const files = backGroundsFIles.filter(data=>{ const ext = data.name.slice(-3).toLowerCase(); return ['jpg', 'png', 'gif', 'epg'].includes(ext); });
+    const bgs = await Promise.all(files.map(async(f)=> {
+      const file = await f.handle.getFile()
+      const thumbnail = await makeThumbnail(file);
+      console.log('thumb', thumbnail)
+      if(!thumbnail) return {...f, thumbnail: '' }
+      return {...f, thumbnail: thumbnail as string }
+    }))
+    this.backGrounds = bgs;
   }
   async openSoundDirectory() {
     const dirHandle = await window.showDirectoryPicker();
     const soundFIles = await getFileNameListRecursice('', dirHandle);
-    this.playSounds = soundFIles.filter(data=>{ const ext = data.name.slice(-3); return ['mp3', 'wav', 'mid', 'wma'].includes(ext); })
+    this.playSounds = soundFIles.filter(data=>{ const ext = data.name.slice(-3); return ['mp3', 'wav', 'mid', 'wma', 'ogg'].includes(ext); })
   }
 
   trackByFile(index: number, file: FileData) {
@@ -60,6 +72,27 @@ export class ExtendBoardListComponent  {
   async setBackGround(fileData: FileData) {
     const file = await fileData.handle.getFile();
     await setBackGround(file)
+  }
+  async addScene(){
+    if(!this.sceneTitle) {
+      alert('シーンタイトルは必須です');
+      return;
+    }
+    if(this.scenes.map(a=>a.title).includes(this.sceneTitle)){
+      alert('同じシーンタイトルを付けることはできません');
+      return;
+    }
+    const scene = await createScene({
+      title: this.sceneTitle,
+      soundName: this.selectedSound,
+      tableImageName: this.selectedTableName,
+      backGroundImageName: this.selectedBackGroundName
+    })
+    this.scenes = [...this.scenes, scene ];
+    this.sceneTitle = '';
+    this.selectedBackGroundName = '';
+    this.selectedSound = '';
+    this.selectedTableName = ''
   }
 }
 

@@ -41,6 +41,12 @@ export const setBackGround = async(file: File) => {
   table.backgroundImageIdentifier = image.identifier;
 }
 
+
+export const createScene = async(context: { title: string, soundName:string, tableImageName: string, backGroundImageName: string }) => {
+  return { ...context }
+}
+
+// ---------------------------------------------------------------
 const MEGA_BYTE = 1024 * 1024;
 const  handleAudio = async(file: File) => {
   if (file.type.indexOf('audio/') < 0) return;
