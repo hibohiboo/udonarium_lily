@@ -46,11 +46,13 @@ export class ExtendBoardListComponent  {
       return {...f, thumbnail: thumbnail as string }
     }))
     this.backGrounds = bgs;
-    const fileHandle = await dirHandle.getFileHandle('scenes.json', { create: true });
+    // const fileHandle = await dirHandle.getFileHandle('scenes.json', { create: true });
+    const fileHandle = await dirHandle.getFileHandle('scenes.json');
+
     this.sceneFileHandle = fileHandle;
     const jsonFile = await fileHandle.getFile();
     const json = await jsonFile.text();
-    console.log(json)
+    this.scenes = JSON.parse(json);
   }
   async openSoundDirectory() {
     const dirHandle = await window.showDirectoryPicker();

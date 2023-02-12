@@ -2,10 +2,11 @@
   <div>
     <h2>シーン機能</h2>
     <p>
-      ダウンロードzipを解凍して出来たフォルダを選択。
+      <a href="assets/extends/Udonarium_For_GM_Data.zip" target="_blank">ダウンロードzip</a>を解凍して出来たフォルダを選択。
     </p>
 
     <button (click)="openDataDirectory()">フォルダ選択</button>
+    <ng-container *ngIf="scenes.length !== 0" >
     <h3>シーン</h3>
     <label>
       <span>タイトル</span>
@@ -53,7 +54,9 @@
         {{file.name}}
       </li>
     </ul>
+  </ng-container>
   </div>
+
   <div>
     <h2>フォルダから音楽再生</h2>
     <button (click)="openSoundDirectory()">フォルダ選択</button>
