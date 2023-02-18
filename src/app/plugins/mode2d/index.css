@@ -1,5 +1,8 @@
 .is2d .upright-transform[class] {
-  transform: rotateX(0) translateY(0);
+  transform: rotateX(0) translateY(0) !important;
+}
+.is2d .texture[class] {
+  transform: rotateX(0) translateY(0) translateZ(0) !important;
 }
 .is2d .peer-cursor[class] {
   transform: translateX(-100%) translateY(-100%) rotate(45deg);
