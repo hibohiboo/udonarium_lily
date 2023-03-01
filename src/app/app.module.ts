@@ -200,6 +200,7 @@ import pluginModules from './plugins/extends/modules'
     PanelService,
     PointerDeviceService,
     TabletopService
+    , ...pluginModules.services
   ],
   bootstrap: [MasterScreenComponent]
 })

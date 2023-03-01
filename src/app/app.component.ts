@@ -55,6 +55,8 @@ import { DiceTableSettingComponent } from 'component/dice-table-setting/dice-tab
 import { VoteWindowComponent } from 'component/vote-window/vote-window.component';
 import { AlarmWindowComponent } from 'component/alarm-window/alarm-window.component';
 import { ChatMessageFixComponent } from 'component/chat-message-fix/chat-message-fix.component';
+import { pluginConfig } from 'src/plugins/config';
+import { CounterBoardWindowComponent } from 'src/plugins/add-counter-board/extend/component/counter-board-window/counter-board-window.component';
 
 
 @Component({
@@ -253,6 +255,7 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     setTimeout(() => {
       this.panelService.open(PeerMenuComponent, { width: 500, height: 450, left: 100 });
       this.panelService.open(ChatWindowComponent, { width: 700, height: 400, left: 100, top: 450 });
+      if(pluginConfig.isAddCounterBoard) this.panelService.open(CounterBoardWindowComponent, { width: 500, height: 450, left: 300, top: 100 });
     }, 0);
   }
 
