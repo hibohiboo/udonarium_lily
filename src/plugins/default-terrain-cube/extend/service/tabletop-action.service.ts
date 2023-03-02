@@ -17,7 +17,7 @@ export const createDefaultCubeTerrain = (position, name = 'キューブ', imageU
   terrain.location.x = position.x - 50;
   terrain.location.y = position.y - 50;
   terrain.posZ = position.z;
-  terrain.isLock = true;
+  terrain.isLocked = true;
 
   viewTable.appendChild(terrain);
   return terrain;
