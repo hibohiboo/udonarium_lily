@@ -1,5 +1,4 @@
-import { AfterViewInit, Component, ElementRef, HostBinding, HostListener, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
-
+import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, HostBinding, HostListener, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Card } from '@udonarium/card';
 import { CardStack } from '@udonarium/card-stack';
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
@@ -37,8 +36,8 @@ import { pluginConfig } from 'src/app/plugins/config';
   templateUrl: './game-table.component.html',
   styleUrls: ['./game-table.component.css'],
 })
-export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
-  @HostBinding('class.is2d') is2d: boolean = pluginConfig.is2d
+expHostBinding( ort class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
+  @'class.is2d') is2d: boolean = pluginConfig.is2d
   @ViewChild('root', { static: true }) rootElementRef: ElementRef<HTMLElement>;
   @ViewChild('gameTable', { static: true }) gameTable: ElementRef<HTMLElement>;
   @ViewChild('gameObjects', { static: true }) gameObjects: ElementRef<HTMLElement>;
@@ -96,6 +95,7 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
   get peerCursors(): PeerCursor[] { return this.tabletopService.peerCursors; }
 
   constructor(
+    private changeDetector: ChangeDetectorRef,
     private ngZone: NgZone,
     private contextMenuService: ContextMenuService,
     private pointerDeviceService: PointerDeviceService,
@@ -112,6 +112,11 @@ export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
         if (event.data.identifier !== this.currentTable.identifier && event.data.identifier !== this.tableSelecter.identifier) return;
         console.log('UPDATE_GAME_OBJECT GameTableComponent ' + this.currentTable.identifier);
         this.setGameTableGrid(this.currentTable.width, this.currentTable.height, this.currentTable.gridSize, this.currentTable.gridType, this.currentTable.gridColor);
+      })
+      .on('RE_DRAW_TABLE', event => {
+        console.log("テーブル再描画");
+        this.changeDetector.detectChanges();
+        this.changeDetector.markForCheck();
       })
       .on('DRAG_LOCKED_OBJECT', event => {
         this.isTableTransformMode = true;
