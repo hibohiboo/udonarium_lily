@@ -36,8 +36,8 @@ import { pluginConfig } from 'src/app/plugins/config';
   templateUrl: './game-table.component.html',
   styleUrls: ['./game-table.component.css'],
 })
-expHostBinding( ort class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
-  @'class.is2d') is2d: boolean = pluginConfig.is2d
+export class GameTableComponent implements OnInit, OnDestroy, AfterViewInit {
+  @HostBinding('class.is2d') is2d: boolean = pluginConfig.is2d
   @ViewChild('root', { static: true }) rootElementRef: ElementRef<HTMLElement>;
   @ViewChild('gameTable', { static: true }) gameTable: ElementRef<HTMLElement>;
   @ViewChild('gameObjects', { static: true }) gameObjects: ElementRef<HTMLElement>;
