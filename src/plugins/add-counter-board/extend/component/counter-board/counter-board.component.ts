@@ -60,8 +60,9 @@ export class CounterBoardComponent implements OnInit, OnDestroy {
             countElement.value = `${value}`;
             updatePosition(obj, value, that);
           }
-          , get currentValue() { return inOutElement.currentValue; }
+          , get currentValue() { return inOutElement?.currentValue; }
           , set currentValue(value) {
+            if(!inOutElement) return;
             if(inOutElement.currentValue === `${value}`) return; // 2回動いてしまうので防止
             inOutElement.currentValue = `${value}`;
             const number = Number(obj.detailDataElement.getFirstElementByName(DETAIL_COUNT_NAME).value);
@@ -158,8 +159,9 @@ const updatePositionDiaclock = (obj, count, that) => {
   const xBias = -that.size * obj.width / 2;
   const yBias = -that.size * obj.depth / 2;
   const inOutElement = obj.detailDataElement.getFirstElementByName(IN_OUT_NAME);
+  if(!inOutElement) return;
   const radius = inOutElement.currentValue === '1' ? that.outRadius : that.inRadius;
-  console.log(inOutElement.currentValue, radius);
+
   const calcNextXYDiaclock = calcNextXYDiaclockFactory(xBias, yBias, radius, Number(that.bufferDegree));
 
   updatePositionStack(obj, count, that, calcNextXYDiaclock);
