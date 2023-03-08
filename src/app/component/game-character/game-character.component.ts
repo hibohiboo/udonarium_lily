@@ -12,6 +12,7 @@ import {
   OnInit,
   ViewChild
 } from '@angular/core';
+import { GameObject } from '@udonarium/core/synchronize-object/game-object';
 import { ImageFile } from '@udonarium/core/file-storage/image-file';
 import { ObjectNode } from '@udonarium/core/synchronize-object/object-node';
 import { ObjectStore } from '@udonarium/core/synchronize-object/object-store';
@@ -285,6 +286,16 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
           SoundEffect.play(PresetSound.sweep);
         }
       },
+/*
+      {
+        name: '削除', action: () => {
+          console.log("円柱_削除実行_キャラコマ");
+          this.gameCharacter.setLocation('graveyard');
+          this.deleteGameObject(this.gameCharacter);
+          ObjectStore.instance.clearDeleteHistory();
+        }
+      },
+*/
       ContextMenuSeparator,
       (this.isLock
         ? {
@@ -311,6 +322,11 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
     ], this.name);
   }
 
+  private deleteGameObject(gameObject: GameObject) {
+    gameObject.destroy();
+    this.changeDetector.markForCheck();
+  }
+
   onMove() {
     SoundEffect.play(PresetSound.piecePick);
   }
@@ -335,6 +351,16 @@ export class GameCharacterComponent implements OnInit, OnDestroy, AfterViewInit 
       this.gameCharacter.targeted = this.gameCharacter.targeted ? false : true;
     }
     if (key_meta) console.log("metaキー");
+
+    if (key_shift && key_alt) {
+      console.log("shift+ALTキー");
+      let objects = ObjectStore.instance.getObjects(GameCharacter);
+      for (let object of objects) {
+        object.targeted = false;
+        EventSystem.trigger('CHK_TARGET_CHANGE', { identifier: object.identifier, className: object.aliasName });
+      }
+    }
+
     //出力
   }
 
