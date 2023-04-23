@@ -8,12 +8,12 @@ export type PostMessageChat = PostMessageData<{
   message: ChatMessageContext
   tab: string
 }>
-export type PostMessageEventType = 'open-connect' | 'login-sunncess'
+export type PostMessageEventType = 'open-connect' | 'login-sunncess' | 'connect-peer'
 export type Message = {
   type: PostMessageEventType;
   payload: any;
 }
-type ReceiveMessageEventType = 'change-player-name';
+type ReceiveMessageEventType = 'change-player-name' | 'connect-by-target-user-id' ;
 export type ReceiveMessage = {
   type: ReceiveMessageEventType;
   payload: any;
