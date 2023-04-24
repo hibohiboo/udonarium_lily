@@ -6,6 +6,7 @@ import { PeerCursor } from "@udonarium/peer-cursor";
 import { PeerContext } from "@udonarium/core/system/network/peer-context";
 import { ObjectStore } from "@udonarium/core/synchronize-object/object-store";
 import { parentOrigin } from "./const";
+import { ChatTab } from "@udonarium/chat-tab";
 
 const isChatMessage = (data: any): data is PostMessageChat =>
   ['chat', 'dice'].includes(data.type);
@@ -30,6 +31,11 @@ export const listenMessage = ()=>{
         ObjectStore.instance.clearDeleteHistory();
         Network.connect(context.peerId);
       }
+      if (event.data.type === 'send-chat-message'){
+        const tab = 'MainTab'
+        ObjectStore.instance.get<ChatTab>(tab).addMessage(event.data.payload)
+      }
+
     },
     false,
   );
