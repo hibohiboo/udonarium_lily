@@ -1,1 +1,1 @@
-export const origin = 'localhost:3000';
+export const parentOrigin = 'localhost:3000';

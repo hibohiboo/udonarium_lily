@@ -5,17 +5,17 @@ import { postMessage } from "./post";
 import { PeerCursor } from "@udonarium/peer-cursor";
 import { PeerContext } from "@udonarium/core/system/network/peer-context";
 import { ObjectStore } from "@udonarium/core/synchronize-object/object-store";
+import { parentOrigin } from "./const";
 
 const isChatMessage = (data: any): data is PostMessageChat =>
   ['chat', 'dice'].includes(data.type);
 
-const origin = 'http://localhost:3000'
 
 export const listenMessage = ()=>{
   window.addEventListener(
     'message',
     (event: MessageEvent<ReceiveMessage>) => {
-      if (event.origin !== origin) return
+      if (event.origin !== parentOrigin) return
       // event.data.type webpackOKのメッセージなども来る。
 
       // ニックネーム修正
