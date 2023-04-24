@@ -8,7 +8,7 @@ export type PostMessageChat = PostMessageData<{
   message: ChatMessageContext
   tab: string
 }>
-export type PostMessageEventType = 'open-connect' | 'login-sunncess' | 'connect-peer'
+export type PostMessageEventType = 'open-connect' | 'login-sunncess' | 'connect-peer' | 'update-chat-message'
 export type Message = {
   type: PostMessageEventType;
   payload: any;
