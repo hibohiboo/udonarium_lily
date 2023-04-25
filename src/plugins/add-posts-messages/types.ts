@@ -9,7 +9,7 @@ export type PostMessageChat = PostMessageData<{
   tab: string
 }>
 export type PostMessageEventType = 'open-connect' | 'login-sunncess' | 'connect-peer' | 'update-chat-message'
-                                 | 'load-rooms'
+                                 | 'load-rooms' | 'password-verify-error'
 export type Message = {
   type: PostMessageEventType;
   payload: any;

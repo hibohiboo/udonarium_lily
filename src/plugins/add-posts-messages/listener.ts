@@ -33,6 +33,7 @@ export const listenMessage = ()=>{
         ObjectStore.instance.clearDeleteHistory();
         Network.connect(context.peerId);
       }
+
       // ルーム接続
       if(event.data.type === 'connect-by-room-alias'){
         const {alias, pass} = event.data.payload;
@@ -41,14 +42,11 @@ export const listenMessage = ()=>{
         connectRoom(room.peerContexts, pass);
       }
 
-
-
       // チャット受信
       if (event.data.type === 'send-chat-message'){
         const tab = 'MainTab'
         ObjectStore.instance.get<ChatTab>(tab).addMessage(event.data.payload)
       }
-
 
     },
     false,
@@ -118,7 +116,10 @@ const connectRoom = (peerContexts: PeerContext[], password: string) => {
     PeerCursor.myCursor.reConnectPass = password;
   }
 
-  if (!context.verifyPassword(password)) return;
+  if (!context.verifyPassword(password)){
+    postMessage(true, 'password-verify-error')
+    return;
+  }
 
   const userId = Network.peerContext ? Network.peerContext.userId : PeerContext.generateId();
   Network.open(userId, context.roomId, context.roomName, password);
