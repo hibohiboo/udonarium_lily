@@ -14,7 +14,8 @@ export type Message = {
   type: PostMessageEventType;
   payload: any;
 }
-type ReceiveMessageEventType = 'change-player-name' | 'connect-by-target-user-id'  | 'send-chat-message';;
+type ReceiveMessageEventType = 'change-player-name' | 'connect-by-target-user-id'  | 'send-chat-message'
+                              | 'connect-by-room-alias';
 export type ReceiveMessage = {
   type: ReceiveMessageEventType;
   payload: any;

@@ -12,6 +12,7 @@ import { ChatMessage } from "@udonarium/chat-message";
 const isChatMessage = (data: any): data is PostMessageChat =>
   ['chat', 'dice'].includes(data.type);
 
+let loadedRooms = [];
 
 export const listenMessage = ()=>{
   window.addEventListener(
@@ -32,12 +33,22 @@ export const listenMessage = ()=>{
         ObjectStore.instance.clearDeleteHistory();
         Network.connect(context.peerId);
       }
+      // ルーム接続
+      if(event.data.type === 'connect-by-room-alias'){
+        const {alias, pass} = event.data.payload;
+        const room = loadedRooms.find(room=>room.alias === alias)
+        if(!room) return;
+        connectRoom(room.peerContexts, pass);
+      }
+
+
 
       // チャット受信
       if (event.data.type === 'send-chat-message'){
         const tab = 'MainTab'
         ObjectStore.instance.get<ChatTab>(tab).addMessage(event.data.payload)
       }
+
 
     },
     false,
@@ -47,7 +58,8 @@ export const listenMessage = ()=>{
       postMessage(Network.peerContext.userId, 'open-connect')
       window.setTimeout(async() => {
         const rooms = await loadRooms();
-        postMessage(rooms, 'load-rooms')
+        postMessage(rooms, 'load-rooms');
+        loadedRooms = rooms;
       }, 1000);
     })
     // .on('ALARM_TIMEUP_ORIGIN', event => {})
@@ -97,4 +109,54 @@ const loadRooms = async()=>{
     return 0;
   });
   return rooms;
+}
+
+const connectRoom = (peerContexts: PeerContext[], password: string) => {
+  const context = peerContexts[0];
+
+  if (context.hasPassword) {
+    PeerCursor.myCursor.reConnectPass = password;
+  }
+
+  if (!context.verifyPassword(password)) return;
+
+  const userId = Network.peerContext ? Network.peerContext.userId : PeerContext.generateId();
+  Network.open(userId, context.roomId, context.roomName, password);
+  PeerCursor.myCursor.peerId = Network.peerId;
+
+  let triedPeer: string[] = [];
+  EventSystem.register(triedPeer)
+    .on('OPEN_NETWORK', event => {
+      console.log('LobbyComponent OPEN_PEER', event.data.peerId);
+      EventSystem.unregister(triedPeer);
+      ObjectStore.instance.clearDeleteHistory();
+      for (let context of peerContexts) {
+        Network.connect(context.peerId);
+      }
+      EventSystem.register(triedPeer)
+        .on('CONNECT_PEER', event => {
+          console.log('接続成功！', event.data.peerId);
+          triedPeer.push(event.data.peerId);
+          console.log('接続成功 ' + triedPeer.length + '/' + peerContexts.length);
+          if (peerContexts.length <= triedPeer.length) {
+            resetNetwork();
+            EventSystem.unregister(triedPeer);
+          }
+        })
+        .on('DISCONNECT_PEER', event => {
+          console.warn('接続失敗', event.data.peerId);
+          triedPeer.push(event.data.peerId);
+          console.warn('接続失敗 ' + triedPeer.length + '/' + peerContexts.length);
+          if (peerContexts.length <= triedPeer.length) {
+            resetNetwork();
+            EventSystem.unregister(triedPeer);
+          }
+        });
+    });
+}
+const resetNetwork = ()=> {
+  if (Network.peerContexts.length < 1) {
+    Network.open();
+    PeerCursor.myCursor.peerId = Network.peerId;
+  }
 }
