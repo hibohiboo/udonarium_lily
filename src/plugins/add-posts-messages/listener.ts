@@ -44,8 +44,11 @@ export const listenMessage = ()=>{
   );
   EventSystem.register({})
     .on('OPEN_NETWORK', event => {
-      // console.log('POST OPEN_NETWORK', event.data.peerId);
       postMessage(Network.peerContext.userId, 'open-connect')
+      window.setTimeout(async() => {
+        const rooms = await loadRooms();
+        postMessage(rooms, 'load-rooms')
+      }, 1000);
     })
     // .on('ALARM_TIMEUP_ORIGIN', event => {})
     // .on('ALARM_POP', event => {})
@@ -70,4 +73,28 @@ export const listenMessage = ()=>{
     })
     // .on('DISCONNECT_PEER', event => {})
   ;
+}
+const loadRooms = async()=>{
+  const rooms = [];
+  let peersOfroom: { [room: string]: PeerContext[] } = {};
+  let peerIds = await Network.listAllPeers();
+  for (let peerId of peerIds) {
+    let context = PeerContext.parse(peerId);
+    if (context.isRoom) {
+      let alias = context.roomId + context.roomName;
+      if (!(alias in peersOfroom)) {
+        peersOfroom[alias] = [];
+      }
+      peersOfroom[alias].push(context);
+    }
+  }
+  for (let alias in peersOfroom) {
+    rooms.push({ alias: alias, roomName: peersOfroom[alias][0].roomName, peerContexts: peersOfroom[alias] });
+  }
+  rooms.sort((a, b) => {
+    if (a.alias < b.alias) return -1;
+    if (a.alias > b.alias) return 1;
+    return 0;
+  });
+  return rooms;
 }
